@@ -75,14 +75,14 @@ sub encrypt {
 	my $pos = 0;
 	my @cipher = ();
 	foreach my $char (split(//, $plainText)) {
-		my $curr = $alpha{$char};
-		my $shift = $self->{saltArr}->[$pos];
-		my $newPos = $curr + $shift;
+		my $currPos = $alpha{$char};
+		my $shiftBy = $self->{saltArr}->[$pos];
+		my $newPos = $currPos + $shiftBy;
 		$newPos = $newPos > $alphaLen ? $newPos - $alphaLen : $newPos;
 		my $newChar = $alpha[$newPos];
 		push(@cipher, $newChar);
 
-		#printf "curr=%d, shift=%d, newPos=%d, origChar=%s, newchar=%s\n", $curr, $shift, $newPos, $char, $newChar;
+		#printf "curr=%d, shift=%d, newPos=%d, origChar=%s, newchar=%s\n", $currPos, $shiftBy, $newPos, $char, $newChar;
 
 		$pos = 0 if (++$pos >= $saltLen);
 	}
@@ -103,14 +103,14 @@ sub decrypt {
 	my @plain = ();
 
 	foreach my $char (split(//, $cipher)) {
-		my $curr = $alpha{$char};
-		my $shift = $self->{saltArr}->[$pos];
-		my $newPos = $curr - $shift;
+		my $currPos = $alpha{$char};
+		my $shiftBy = $self->{saltArr}->[$pos];
+		my $newPos = $currPos - $shiftBy;
 		$newPos = $newPos < 0 ? $alphaLen + $newPos : $newPos;
 		my $newChar = $alpha[$newPos];
 		push(@plain, $newChar);
 
-		#printf "curr=%d, shift=%d, newPos=%d, origChar=%s, newchar=%s\n", $curr, $shift, $newPos, $char, $newChar;
+		#printf "curr=%d, shift=%d, newPos=%d, origChar=%s, newchar=%s\n", $currPos, $shiftBy, $newPos, $char, $newChar;
 
 		$pos = 0 if (++$pos >= $saltLen);
 	}
